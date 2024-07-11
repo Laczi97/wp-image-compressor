@@ -6,8 +6,10 @@ const sharp = require('sharp');
 let count= 0;
 
 async function start() {
+    console.time("Execution Time"); // Start the timer
     //await downloadImages(urlList);
     await compressImages();
+    console.timeEnd("Execution Time"); // End the timer and log the elapsed time
 }
 
 const urlList = new Set([
@@ -68,6 +70,7 @@ async function compressImages() {
     const imageExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.tiff', '.webp'];
 
     await compressDirectory(baseDir, outputDir, imageExtensions);
+    console.log("Done!");
     console.log(count);
     //await compressDirectoryFlat(baseDir, outputDir, imageExtensions);
 }
