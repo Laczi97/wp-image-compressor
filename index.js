@@ -97,48 +97,50 @@ async function compressDirectory(baseDir, outputDir, imageExtensions) {
             }
 
             // Get the metadata of the image before compression
-            const metadata = await sharp(fullPath).metadata();
+            if (path.extname(entry.name) === '.jpg' || path.extname(entry.name) === '.jpeg' || path.extname(entry.name) === '.png') {
+                const metadata = await sharp(fullPath).metadata();
 
-            // Save the width and height of the image in an object
-            let imageData = {
-                width: metadata.width,
-                height: metadata.height,
-                extension: path.extname(entry.name)
-            };
+                // Save the width and height of the image in an object
+                let imageData = {
+                    width: metadata.width,
+                    height: metadata.height,
+                    extension: path.extname(entry.name)
+                };
 
-            // Calculate the aspect ratio
-            const aspectRatio = imageData.width / imageData.height;
+                // Calculate the aspect ratio
+                const aspectRatio = imageData.width / imageData.height;
 
-            // Adjust the width and height while maintaining the aspect ratio
-            /*if (imageData.width > 1024) {
-                imageData.width = 1024;
-                imageData.height = Math.round(imageData.width / aspectRatio);
-            }
-            if (imageData.height > 1024) {
-                imageData.height = 1024;
-                imageData.width = Math.round(imageData.height * aspectRatio);
-            }*/
+                // Adjust the width and height while maintaining the aspect ratio
+                /*if (imageData.width > 1024) {
+                    imageData.width = 1024;
+                    imageData.height = Math.round(imageData.width / aspectRatio);
+                }
+                if (imageData.height > 1024) {
+                    imageData.height = 1024;
+                    imageData.width = Math.round(imageData.height * aspectRatio);
+                }*/
 
-            if (imageData.extension=== '.jpg' || imageData.extension === '.jpeg') {
-                await sharp(fullPath)
-                /*.resize(imageData.width, imageData.height, {
-                    fit: 'inside',
-                    withoutEnlargement: true
-                })*/
-                .withMetadata()
-                .jpeg({ quality: 70, progressive: true})
-                .toFile(outputPath);
-            }
+                if (imageData.extension=== '.jpg' || imageData.extension === '.jpeg') {
+                    await sharp(fullPath)
+                        /*.resize(imageData.width, imageData.height, {
+                            fit: 'inside',
+                            withoutEnlargement: true
+                        })*/
+                        .withMetadata()
+                        .jpeg({ quality: 70, progressive: true})
+                        .toFile(outputPath);
+                }
 
-            if (imageData.extension === '.png') {
-                await sharp(fullPath)
-                /*.resize(imageData.width, imageData.height, {
-                    fit: 'inside',
-                    withoutEnlargement: true
-                })*/
-                .withMetadata()
-                .png({ quality: 70, compressionLevel: 9, adaptiveFiltering: true, force: true})
-                .toFile(outputPath);
+                if (imageData.extension === '.png') {
+                    await sharp(fullPath)
+                        /*.resize(imageData.width, imageData.height, {
+                            fit: 'inside',
+                            withoutEnlargement: true
+                        })*/
+                        .withMetadata()
+                        .png({ quality: 70, compressionLevel: 9, adaptiveFiltering: true, force: true})
+                        .toFile(outputPath);
+                }
             }
 
             count++;
