@@ -3,6 +3,8 @@ const fs = require('fs');
 const path = require('path');
 const sharp = require('sharp');
 
+let count= 0;
+
 async function start() {
     //await downloadImages(urlList);
     await compressImages();
@@ -66,6 +68,7 @@ async function compressImages() {
     const imageExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.tiff', '.webp'];
 
     await compressDirectory(baseDir, outputDir, imageExtensions);
+    console.log(count);
     //await compressDirectoryFlat(baseDir, outputDir, imageExtensions);
 }
 
@@ -101,39 +104,46 @@ async function compressDirectory(baseDir, outputDir, imageExtensions) {
             };
 
             // Calculate the aspect ratio
-            /*const aspectRatio = imageData.width / imageData.height;
+            const aspectRatio = imageData.width / imageData.height;
 
             // Adjust the width and height while maintaining the aspect ratio
-            if (imageData.width > 1000) {
-                imageData.width = 1000;
+            /*if (imageData.width > 1024) {
+                imageData.width = 1024;
                 imageData.height = Math.round(imageData.width / aspectRatio);
             }
-            if (imageData.height > 1000) {
-                imageData.height = 1000;
+            if (imageData.height > 1024) {
+                imageData.height = 1024;
                 imageData.width = Math.round(imageData.height * aspectRatio);
             }*/
 
             if (imageData.extension=== '.jpg' || imageData.extension === '.jpeg') {
                 await sharp(fullPath)
-                    /*.resize(imageData.width, imageData.height, {
-                        fit: 'inside',
-                        withoutEnlargement: true
-                    })*/
-                    .withMetadata()
-                    .jpeg({ quality: 70, progressive: true})
-                    .toFile(outputPath);
+                /*.resize(imageData.width, imageData.height, {
+                    fit: 'inside',
+                    withoutEnlargement: true
+                })*/
+                .withMetadata()
+                .jpeg({ quality: 70, progressive: true})
+                .toFile(outputPath);
             }
 
             if (imageData.extension === '.png') {
                 await sharp(fullPath)
-                    /*.resize(imageData.width, imageData.height, {
-                        fit: 'inside',
-                        withoutEnlargement: true
-                    })*/
-                    .withMetadata()
-                    .png({ quality: 70, compressionLevel: 9, adaptiveFiltering: true, force: true})
-                    .toFile(outputPath);
+                /*.resize(imageData.width, imageData.height, {
+                    fit: 'inside',
+                    withoutEnlargement: true
+                })*/
+                .withMetadata()
+                .png({ quality: 70, compressionLevel: 9, adaptiveFiltering: true, force: true})
+                .toFile(outputPath);
             }
+
+            count++;
+
+            if (count % 50 === 0) {
+                console.log(count);
+            }
+
         }
     }
 }
