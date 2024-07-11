@@ -96,6 +96,21 @@ async function compressDirectory(baseDir, outputDir, imageExtensions) {
                 console.error('Error creating directories:', error);
             }
 
+            // Check if the file already exists in the outputPath
+            if (fs.existsSync(outputPath)) {
+                console.log(`File ${outputPath} already exists. Skipping...`);
+                count++;
+                continue;
+            }
+
+            // Check if the file size is 0
+            const stats = fs.statSync(fullPath);
+            if (stats.size === 0) {
+                console.log(`File ${fullPath} is empty. Skipping...`);
+                continue;
+            }
+
+
             // Get the metadata of the image before compression
             if (path.extname(entry.name) === '.jpg' || path.extname(entry.name) === '.jpeg' || path.extname(entry.name) === '.png') {
                 const metadata = await sharp(fullPath).metadata();
