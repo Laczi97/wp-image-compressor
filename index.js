@@ -135,27 +135,34 @@ async function compressDirectory(baseDir, outputDir, imageExtensions) {
                     imageData.width = Math.round(imageData.height * aspectRatio);
                 }*/
 
-                if (imageData.extension=== '.jpg' || imageData.extension === '.jpeg') {
-                    await sharp(fullPath)
-                        /*.resize(imageData.width, imageData.height, {
-                            fit: 'inside',
-                            withoutEnlargement: true
-                        })*/
-                        .withMetadata()
-                        .jpeg({ quality: 70, progressive: true})
-                        .toFile(outputPath);
+                try {
+                    if (imageData.extension=== '.jpg' || imageData.extension === '.jpeg') {
+                        await sharp(fullPath)
+                            /*.resize(imageData.width, imageData.height, {
+                                fit: 'inside',
+                                withoutEnlargement: true
+                            })*/
+                            .withMetadata()
+                            .jpeg({ quality: 70, progressive: true})
+                            .toFile(outputPath);
+                    }
+
+                    if (imageData.extension === '.png') {
+                        await sharp(fullPath)
+                            /*.resize(imageData.width, imageData.height, {
+                                fit: 'inside',
+                                withoutEnlargement: true
+                            })*/
+                            .withMetadata()
+                            .png({ quality: 70, compressionLevel: 9, adaptiveFiltering: true, force: true})
+                            .toFile(outputPath);
+                    }
+                } catch (error) {
+                    console.error('Error in file: ', entry.name);
+                    console.error('Error description: ', error);
+                    continue;
                 }
 
-                if (imageData.extension === '.png') {
-                    await sharp(fullPath)
-                        /*.resize(imageData.width, imageData.height, {
-                            fit: 'inside',
-                            withoutEnlargement: true
-                        })*/
-                        .withMetadata()
-                        .png({ quality: 70, compressionLevel: 9, adaptiveFiltering: true, force: true})
-                        .toFile(outputPath);
-                }
             }
 
             count++;
